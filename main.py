@@ -51,28 +51,81 @@ class Model:
             result += ml.mse(self.forward_pass(pair[0]), pair[1])
 
         return result
+    
+    def train(self, maxGen, in_out_pairs):
+        lastError = self.get_error(in_out_pairs)
+
+        for _ in range(maxGen):
+            if lastError <= self.error_max:
+                break
+
+            for layer in self.layers:
+                for node in layer:
+                    # Update bias
+                    oldBias = node["bias"]
+                    node["bias"] += self.learning_rate
+                    newError = self.get_error(in_out_pairs)
+
+                    if newError < lastError:
+                        lastError = newError
+                    else:
+                        node["bias"] = oldBias
+                        node["bias"] -= self.learning_rate
+                        newError = self.get_error(in_out_pairs)
+
+                        if newError < lastError:
+                            lastError = newError
+                        else:
+                            node["bias"] = oldBias
+
+                    # Update weights
+                    weights = node["weights"]
+
+                    for i in range(len(weights)):
+                        oldWeight = weights[i]
+                        weights[i] += self.learning_rate
+                        newError = self.get_error(in_out_pairs)
+
+                        if newError < lastError:
+                            lastError = newError
+                            continue
+
+                        weights[i] = oldWeight
+                        weights[i] -= self.learning_rate
+                        newError = self.get_error(in_out_pairs)
+
+                        if newError < lastError:
+                            lastError = newError
+                            continue
+
+                        weights[i] = oldWeight
 
 if __name__ == "__main__":
     model_path = "/workspaces/Testing-New-Code-in-Python/model.json"
+    MAX_INPUT_TOKENS = 50
+    MAX_OUTPUT_TOKENS = 10
 
     # Input -> Output
     input_output_pairs = [
-    [[1, 1, 0, 0], [0, 0, 0, 1]],
-    [[1, 0, 0, 1], [0, 0, 1, 0]],
-    [[0, 0, 0, 1], [1, 0, 0, 0]],
-    [[1, 0, 1, 1], [1, 1, 1, 1]],
+        [[1, 1, 0, 0] + [0] * (MAX_INPUT_TOKENS - 4), [0, 0, 0, 1] + [0] * (MAX_OUTPUT_TOKENS - 4)],
+        [[1, 0, 0, 1] + [0] * (MAX_INPUT_TOKENS - 4), [0, 0, 1, 0] + [0] * (MAX_OUTPUT_TOKENS - 4)],
+        [[0, 0, 0, 1] + [0] * (MAX_INPUT_TOKENS - 4), [1, 0, 0, 0] + [0] * (MAX_OUTPUT_TOKENS - 4)],
+        [[1, 0, 1, 1] + [0] * (MAX_INPUT_TOKENS - 4), [1, 1, 1, 1] + [0] * (MAX_OUTPUT_TOKENS - 4)],
     ]
 
     model = Model()
-    model.add_layer(10, 4) # Input
-    model.add_layer(10, 10) # Hidden
-    model.add_layer(10, 10) # Hidden
-    model.add_layer(4, 10) # Output
+    # model.load(model_path)
+    model.learning_rate = 0.3
+    model.error_max = 0.5
+    model.add_layer(5, MAX_INPUT_TOKENS) # Input
+    model.add_layer(5, 5) # Hidden
+    model.add_layer(MAX_OUTPUT_TOKENS, 5) # Output
+    model.train(1000, input_output_pairs)
     model.save(model_path)
 
     # Output
     print(f"Error: {model.get_error(input_output_pairs)}")
 
     for pair in input_output_pairs:
-        print(f"Output: {model.forward_pass(pair[1])}")
+        print(f"Output: {[round(value) for value in model.forward_pass(pair[0])]}")
     

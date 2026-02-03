@@ -1,0 +1,13 @@
+{
+   "intents": [
+        {
+            "patterns": ["Hey!", "Hi!", "Hello!"],
+            "outputs": ["Hey there!", "Hi!", "Hello!"]
+        },
+
+        {
+            "patterns": ["How are you?", "How do you do?", "How is it going today?"],
+            "outputs": ["I am doing fine.", "Amazing! you?", "Great! You?"]
+        }
+    ]
+}
