@@ -102,8 +102,8 @@ class Model:
 
 if __name__ == "__main__":
     model_path = "/workspaces/Testing-New-Code-in-Python/model.json"
-    MAX_INPUT_TOKENS = 50
-    MAX_OUTPUT_TOKENS = 10
+    MAX_INPUT_TOKENS = 256
+    MAX_OUTPUT_TOKENS = 16
 
     # Input -> Output
     input_output_pairs = [
