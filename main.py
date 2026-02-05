@@ -102,7 +102,7 @@ class Model:
 
 if __name__ == "__main__":
     model_path = "/workspaces/Testing-New-Code-in-Python/model.json"
-    MAX_INPUT_TOKENS = 256
+    MAX_INPUT_TOKENS = 16**2
     MAX_OUTPUT_TOKENS = 16
 
     # Input -> Output
@@ -117,7 +117,8 @@ if __name__ == "__main__":
     # model.load(model_path)
     model.learning_rate = 0.3
     model.error_max = 0.5
-    model.add_layer(5, MAX_INPUT_TOKENS) # Input
+    model.add_layer(1, MAX_INPUT_TOKENS) # Input
+    model.add_layer(5, 1) # Hidden
     model.add_layer(5, 5) # Hidden
     model.add_layer(MAX_OUTPUT_TOKENS, 5) # Output
     model.train(1000, input_output_pairs)
