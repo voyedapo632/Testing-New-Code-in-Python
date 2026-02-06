@@ -162,6 +162,7 @@ approximately
 Arab
 architect
 area
+are
 argue
 argument
 arise
@@ -806,6 +807,7 @@ division
 divorce
 DNA
 do
+doing
 doctor
 document
 dog

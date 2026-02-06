@@ -12,7 +12,6 @@ def dot_product(arr1, arr2):
 
 def randf():
   return 0.0123 * random.randint(1, 100)
-
 def mse(x, y):
   result = 0.0
   for i in range(len(x) if len(x) <= len(y) else len(y)): result += (y[i] - x[i])**2
@@ -56,19 +55,25 @@ class Model_ANN:
       } for _ in range(size)
     ])
 
-  def compute_layer(self, layer:list, values:list, activation=sigmoid) -> list:
+  def compute_layer(self, layer:list, values:list, activation=sigmoid, user_activation=True) -> list:
     results = []
 
     for node in layer:
-      results.append(activation(dot_product(node["weights"], values) + node["bias"]))
+      if user_activation:
+        results.append(activation(dot_product(node["weights"], values) + node["bias"]))
+      else:
+        results.append(dot_product(node["weights"], values) + node["bias"])
 
     return results
 
   def forward_pass(self, values:list) -> list:
     output = [value for value in values]
 
-    for layer in self.layers:
-      output = self.compute_layer(layer, output)
+    for i in range(len(self.layers)):
+      if i == len(self.layers) - 1:
+        output = self.compute_layer(self.layers[i], output, user_activation=True)
+      else:
+        output = self.compute_layer(self.layers[i], output, user_activation=True)
 
     return output
   
@@ -84,6 +89,7 @@ class Model_ANN:
     lastError = self.get_error(in_out_pairs)
 
     for _ in range(maxGen):
+      print(lastError)
       if lastError <= self.error_max:
         break
 
