@@ -89,6 +89,9 @@ class Model_ANN:
     lastError = self.get_error(in_out_pairs)
 
     for _ in range(maxGen):
+      # self.learning_rate = abs(lastError - self.error_max) / 512
+      # self.learning_rate -= abs(lastError - self.error_max) / 11205
+
       print(lastError)
       if lastError <= self.error_max:
         break

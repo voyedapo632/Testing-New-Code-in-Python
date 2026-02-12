@@ -34,6 +34,33 @@ def decode_msg(tokens):
     text = ''
  
     for token in tokens:
-        text += word_bank[int(len(word_bank) * token) % len(word_bank)] + ' '
+        word = word_bank[int(len(word_bank) * token) % len(word_bank)]
+
+        if word != '[empty-token]':
+            text += word + ' '
 
     return text[:-1]
+
+def encode_word(word, max_length, empty_token_index=0):
+    num = 0
+
+    if word.lower() in word_bank:
+        num = word_bank.index(word.lower())
+    else:
+        sum = 0
+
+        for c in word:
+            sum += ord(c)
+
+        num = sum
+
+    results = [float(c) / 10.0 for c in str(int(num))]
+    return results + [empty_token_index] * (max_length - len(results))
+  
+def decode_word(tokens):
+    num = 0
+
+    for token in tokens:
+        num = num * 10 + int(token * 10)
+
+    return word_bank[int(num) % len(word_bank)]
